@@ -176,3 +176,14 @@ python -m pytest -q
 Covers genesis hash, second-row link, blank owner → UNOWNED,
 renamed_from → RENAMED, verify catching an edited event, missing file
 reported, import hashing file bytes.
+
+## Cite this
+
+Aziel Eliab. EmployeeLock. https://github.com/AzielEliab/employeelock. https://employeelock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22257493.
+
+- Catalog: https://aziel-runtime.vibelock.workers.dev/
+- Worker homepage: https://employeelock-download-tracker.vibelock.workers.dev/
+- Counted download (gzip HTTP 200, no 302): https://employeelock-download-tracker.vibelock.workers.dev/download
+- GitHub: https://github.com/AzielEliab/employeelock
+- Citation JSON: https://employeelock-download-tracker.vibelock.workers.dev/cite.json
+- DOI: https://doi.org/10.5281/zenodo.22257493
