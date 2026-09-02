@@ -256,7 +256,7 @@ echo "Not a court. Not UL. Not a truth score. Author: Aziel Eliab."
 `;
 }
 
-async function serveAsset(request, env, asset) {
+async function serveAsset(request, env, asset, { head = false } = {}) {
   if (!env.ASSETS) {
     return json({ error: "assets binding missing" }, 500);
   }
@@ -269,7 +269,12 @@ async function serveAsset(request, env, asset) {
   headers.set("Content-Type", "application/gzip");
   headers.set("Content-Disposition", 'attachment; filename="' + asset.replaceAll('"', "") + '"');
   headers.set("Cache-Control", "private, no-store");
+  const len = assetRes.headers.get("Content-Length");
+  if (len) headers.set("Content-Length", len);
   for (const [k, v] of Object.entries(corsHeaders())) headers.set(k, v);
+  if (head) {
+    return new Response(null, { status: 200, headers });
+  }
   return new Response(assetRes.body, { status: 200, headers });
 }
 
@@ -391,23 +396,23 @@ export default {
       });
     }
 
-    if (url.pathname === "/go" && request.method === "GET") {
+    if (url.pathname === "/go" && (request.method === "GET" || request.method === "HEAD")) {
       const dims = parseDims(url.searchParams);
       const asset = dims.asset || DEFAULT_ASSET;
       dims.asset = asset;
-      await increment(env, dims);
-      return serveAsset(request, env, asset);
+      if (request.method === "GET") await increment(env, dims);
+      return serveAsset(request, env, asset, { head: request.method === "HEAD" });
     }
 
-    if ((url.pathname === "/download" || url.pathname.startsWith("/download/")) && request.method === "GET") {
+    if ((url.pathname === "/download" || url.pathname.startsWith("/download/")) && (request.method === "GET" || request.method === "HEAD")) {
       const dims = parseDims(url.searchParams);
       if (!dims.asset && url.pathname.startsWith("/download/")) {
         dims.asset = decodeURIComponent(url.pathname.slice("/download/".length));
       }
       const asset = dims.asset || DEFAULT_ASSET;
       dims.asset = asset;
-      await increment(env, dims);
-      return serveAsset(request, env, asset);
+      if (request.method === "GET") await increment(env, dims);
+      return serveAsset(request, env, asset, { head: request.method === "HEAD" });
     }
 
     return json({ error: "not found" }, 404);
