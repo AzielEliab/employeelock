@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "employeelock"
+version = "0.1.0"
+description = "EmployeeLock: hash-chained accountability workbook. Local CLI + sheet. Not a court filing. Author Aziel Eliab."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "Aziel Eliab"}]
+requires-python = ">=3.10"
+keywords = [
+    "accountability",
+    "workbook",
+    "hash-chain",
+    "sha256",
+    "unowned",
+    "renamed",
+    "employeelock",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business",
+    "Intended Audience :: Developers",
+]
+dependencies = [
+    "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+employeelock = "employeelock.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AzielEliab/employeelock"
+Download = "https://employeelock-download-tracker.vibelock.workers.dev/download?asset=employeelock-0.1.0.tar.gz"
+Issues = "https://github.com/AzielEliab/employeelock/issues"
+Counted-downloads = "https://employeelock-download-tracker.vibelock.workers.dev/"
+
+[tool.setuptools.packages.find]
+include = ["employeelock*"]
+
+[tool.setuptools.package-data]
+employeelock = ["web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

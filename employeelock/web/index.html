@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EmployeeLock — hash-chained accountability workbook</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="tag">EmployeeLock · v0.1.0 · loopback · not a court</div>
+    <h1>EmployeeLock</h1>
+    <p class="motto">Name the event. Name who owns the record. Chain the row.</p>
+    <p class="lede">
+      This is a spreadsheet plus a checker. Each line asks what happened,
+      what followed, who was named, what happened soon, what lasted, and
+      who owns the record. Blank owner shows as UNOWNED. A moved name shows
+      as RENAMED. We hash the line. We do not score truth.
+    </p>
+  </header>
+
+  <aside class="banner limit" role="note">
+    THIS IS: workbook (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS)
+    + CLI (init/append/import/verify) + linear hash chain + countermeasure
+    against unowned/renamed rows.
+    THIS IS NOT: UL or a BAL issue paper; FoldLock; TemporalLock (borrows
+    ethic, different product); court filing / exhibit stickerer / counsel;
+    truth score / consensus / token; remote uploader / anonymous relay;
+    a charge sheet against a named living person.
+    Demo rows are generic format proof, not case facts.
+  </aside>
+
+  <div class="view-toggle" role="group" aria-label="Simple or advanced view">
+    <button type="button" id="view-simple" class="view on" aria-pressed="true">Simple</button>
+    <button type="button" id="view-advanced" class="view" aria-pressed="false">Advanced</button>
+  </div>
+
+  <section class="counts" aria-live="polite">
+    <div><span id="c-events">0</span><label>events</label></div>
+    <div class="unowned"><span id="c-unowned">0</span><label>UNOWNED</label></div>
+    <div class="renamed"><span id="c-renamed">0</span><label>RENAMED</label></div>
+    <div class="ok"><span id="c-ok">0</span><label>chain OK</label></div>
+    <div><span id="c-owned">0</span><label>owned</label></div>
+    <div><span id="c-files">0</span><label>files</label></div>
+  </section>
+
+  <div class="actions">
+    <button type="button" id="btn-new">New workbook</button>
+    <button type="button" id="btn-sample">Sample</button>
+    <button type="button" id="btn-verify">Verify</button>
+    <button type="button" id="btn-export">Export</button>
+    <button type="button" id="btn-xlsx">Download .xlsx</button>
+    <button type="button" id="btn-doctor">Doctor</button>
+    <button type="button" id="btn-upload">Open .xlsx</button>
+    <input id="open-xlsx" type="file" accept=".xlsx" hidden>
+  </div>
+
+  <form id="row-form" autocomplete="off">
+    <fieldset>
+      <legend>Add a row</legend>
+      <label for="event"><span class="kicker">What happened (event)</span> Required to count as a row.</label>
+      <textarea id="event" name="event" rows="2" required placeholder="the records desk closed the ticket"></textarea>
+
+      <label for="result"><span class="kicker">What followed (result)</span></label>
+      <textarea id="result" name="result" rows="2" placeholder="a new owner string was written"></textarea>
+
+      <label for="blame"><span class="kicker">Blame placed</span> Who or what was named as responsible. Blank is allowed.</label>
+      <input id="blame" name="blame" placeholder="(blank is ok)">
+
+      <label for="owner"><span class="kicker">Owner of this record</span> Blank flags UNOWNED. Not the same field as blame.</label>
+      <input id="owner" name="owner" placeholder="records desk">
+
+      <label for="renamed_from" class="advanced-only"><span class="kicker">Renamed from</span> Prior name, if any. Filled flags RENAMED.</label>
+      <input id="renamed_from" name="renamed_from" class="advanced-only" placeholder="ticket queue">
+
+      <label for="short"><span class="kicker">Soon (outcome_short)</span></label>
+      <textarea id="short" name="short" rows="2" placeholder="the row is owned"></textarea>
+
+      <label for="long"><span class="kicker">Lasted (outcome_long)</span> A later long outcome is a new row that cites the old hash.</label>
+      <textarea id="long" name="long" rows="2" placeholder="replace demo rows with real work"></textarea>
+
+      <div class="grid advanced-only">
+        <label for="cites"><span class="kicker">Cites</span> Prior row_hash</label>
+        <input id="cites" name="cites" placeholder="optional 64-hex">
+        <label for="confidence"><span class="kicker">Confidence</span> 0.0–1.0 observer-assigned. Not a truth score.</label>
+        <input id="confidence" name="confidence" value="0.7">
+        <label for="observer"><span class="kicker">Observer</span></label>
+        <select id="observer" name="observer">
+          <option>operator</option>
+          <option>witness</option>
+          <option>system</option>
+          <option>third-party</option>
+        </select>
+        <label for="exhibit"><span class="kicker">Exhibit potential</span> Not an exhibit number.</label>
+        <select id="exhibit" name="exhibit">
+          <option>N</option>
+          <option>Y</option>
+          <option>maybe</option>
+        </select>
+      </div>
+    </fieldset>
+    <div class="actions">
+      <button type="submit" id="btn-add">Add row</button>
+      <button type="button" id="btn-file">Add file (import)</button>
+      <input id="import-file" type="file" multiple hidden>
+    </div>
+  </form>
+
+  <section class="report" aria-live="polite">
+    <p id="kid-plain" class="kid">Open or make a workbook, then add a row. Blank owner shows UNOWNED. We hash the line. We do not decide who was right.</p>
+    <p id="verify-line" class="sha-line"></p>
+    <div id="advanced-panel" class="advanced-panel" hidden>
+      <h2>Rows</h2>
+      <pre id="rows-pre">[]</pre>
+    </div>
+  </section>
+
+  <footer>
+    <p>Apache-2.0 · Aziel Eliab · 2026 · Bound to 127.0.0.1:8871 · Forks welcome and always allowed.</p>
+    <p class="foot-note">Not UL. Not TemporalLock. Not a court. Demo rows are format proof, not case facts.</p>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>
