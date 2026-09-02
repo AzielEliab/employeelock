@@ -7,6 +7,7 @@ import { handleRuntimeApi } from "./runtime.js";
  * GET  /download  increments downloads, serves tarball via env.ASSETS.fetch (no 302)
  * GET  /go        increments downloads, still serves via this Worker (no 302 to GitHub)
  * GET  /install.sh  one-click install script (does not increment; script curls /download)
+ * GET  /v1/skill   skill markdown (does not increment downloads or views)
  * GET  /stats     {views, downloads, total, by_repo, github:{stars,forks,watchers,release_download_count}}
  * POST /event     forks report a download {owner,repo,branch,fork,asset}
  *
@@ -306,6 +307,13 @@ async function indexHtml(env) {
   .count { font-size: 2.2rem; font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
   .count span { display: block; font-size: .95rem; font-weight: 500; color: #9aa3b2; }
   a.dl { display: inline-block; margin-top: .4rem; background: #e8eaef; color: #0e1014; text-decoration: none; font-weight: 650; padding: .65rem 1rem; border-radius: 8px; }
+  .kid { font-size: 1.05rem; margin: 0 0 1rem; }
+  .btns { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0 0 .85rem; }
+  @media (max-width: 520px) { .btns { grid-template-columns: 1fr; } }
+  a.btn, button.btn { display: block; width: 100%; box-sizing: border-box; text-align: center; font: inherit; font-size: 1.2rem; font-weight: 750; padding: 1rem 1.1rem; border-radius: 10px; border: 0; cursor: pointer; text-decoration: none; }
+  a.btn.primary { background: #e8eaef; color: #0e1014; }
+  button.btn.install { background: #c9a227; color: #14110a; }
+  button.btn.install.copied { background: #7dcf9a; color: #0e1014; }
   .meta { margin-top: 1.1rem; color: #9aa3b2; font-size: .92rem; }
   .meta a { color: #c9d4ff; }
   .iso { margin-top: .85rem; font-size: .85rem; color: #7d8696; }
@@ -322,14 +330,44 @@ async function indexHtml(env) {
       <p class="count">${v}<span>Views</span></p>
       <p class="count">${n}<span>Downloads</span></p>
     </div>
-    <a class="dl" href="/download?asset=${DEFAULT_ASSET}">Download ${DEFAULT_ASSET} — ${n} counted</a>
-    <p class="meta">The download count ticks on this click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically.</p>
-    <h2>One-click install</h2>
-    <pre>curl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash</pre>
+    <p class="kid"><strong>Two big buttons.</strong> Download saves the gzip (the Downloads number goes up). One-click install copies a Terminal command. After it finishes, type <code>employeelock ui</code>.</p>
+    <div class="btns">
+      <a class="btn primary dl" href="/download?asset=${DEFAULT_ASSET}">Download</a>
+      <button type="button" class="btn install" id="install-btn">One-click install</button>
+    </div>
+    <pre id="install-cmd">curl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash</pre>
+    <p class="kid">Then run: <code>employeelock ui</code> and open http://127.0.0.1:8871 (this computer only).</p>
+    <p class="meta">The download count ticks on the Download click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
     <p class="iso">Isolated counter: Worker <code>employeelock-download-tracker</code>, project <code>employeelock</code>, KV <code>EMPLOYEELOCK_DOWNLOADS</code>. Not mixed with any other product. /v1 does not increment downloads. Hosted never stores xlsx.</p>
     <p class="meta">GitHub: stars ${gh.stars || 0} · forks ${gh.forks || 0} · watchers ${gh.watchers || 0} · release assets ${gh.release_download_count || 0}</p>
     <p class="meta">Paper: <a href="https://doi.org/10.5281/zenodo.22257493">doi:10.5281/zenodo.22257493</a> · <a href="https://zenodo.org/records/22257493">Zenodo</a> · EmployeeLock_EL-WP-0.1.pdf · Apache-2.0 · Eliab, Aziel</p>
-    <p class="meta"><a href="/stats">JSON stats</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/ai">AI runtime</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${GITHUB_LATEST}">releases</a></p>
+    <p class="meta"><a href="/stats">JSON stats</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/v1/skill">Skill</a> · <a href="/ai">AI runtime</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${GITHUB_LATEST}">releases</a></p>
+    <script>
+      (function () {
+        var cmd = "curl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash";
+        var btn = document.getElementById("install-btn");
+        var pre = document.getElementById("install-cmd");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          function done(ok) {
+            btn.textContent = ok ? "Copied! Paste in Terminal, then run employeelock ui" : "Select the command, copy it, then run employeelock ui";
+            btn.classList.add("copied");
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(cmd).then(function () { done(true); }).catch(function () { done(false); });
+          } else {
+            done(false);
+            if (pre && window.getSelection) {
+              var r = document.createRange();
+              r.selectNodeContents(pre);
+              var sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(r);
+            }
+          }
+        });
+      })();
+    </script>
     <h2>Per repo / branch / fork</h2>
     <ul>${breakdown}</ul>
   </div>

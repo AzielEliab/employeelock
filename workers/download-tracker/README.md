@@ -8,5 +8,6 @@ Does **not** 302 to GitHub on `/download`. Serves gzip via `ASSETS.fetch`,
 GET `/` increments a **page-view** counter (separate from downloads).
 GET `/download` increments **downloads**.
 `/v1` never increments DOWNLOADS KV.
+GET `/v1/skill` returns skill markdown (`text/markdown`). Does not increment views or downloads.
 
 Host: https://employeelock-download-tracker.vibelock.workers.dev

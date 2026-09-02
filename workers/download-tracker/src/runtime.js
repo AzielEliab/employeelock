@@ -10,6 +10,8 @@ const CATALOG = "https://aziel-runtime.vibelock.workers.dev";
 const GENESIS_PREV = "0".repeat(64);
 const CONF_PLACEHOLDER = "__EL_CONFIDENCE__";
 const PROTOCOL = "2025-03-26";
+
+const SKILL = '---\nname: EmployeeLock\ndescription: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime.\n---\n\n# EmployeeLock\n\nHash-chained accountability workbook. Local CLI + sheet. Author: **Aziel Eliab**.\n\n**THIS IS:** workbook + hash chain (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init / append / import / verify / ui / doctor).\n\n**THIS IS NOT:** a court filing, exhibit stickerer, counsel, UL or BAL paper, truth score, consensus, token, remote uploader, or a charge sheet. Hosted `/v1` never stores xlsx.\n\nHonest banner: workbook + hash chain, not a court.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Call these URLs\n\n- Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- Live skill (this markdown): `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/skill`\n\nOps (do **not** increment downloads or views):\n\n- `POST /v1/append-preview` — hash a proposed LOG row; nothing is stored\n- `POST /v1/verify-canonical` — recompute SHA-256 of posted canonical JSON or fields\n- `GET /v1/health`\n- `GET /v1/skill` — this file\n\nCatalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/verify-canonical`, `GET /p/employeelock/skill`.\n\nMCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.\n\nGrok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n\n## Kid-plain field names\n\nUse these. The hosted API also accepts the long hashed names.\n\n| kid-plain | hashed field | meaning |\n|-----------|--------------|---------|\n| event | event | what happened |\n| result | result | what followed |\n| blame | blame_placed | who is responsible, or blank |\n| owner | owner_named | who owns the record. blank → UNOWNED |\n| short | outcome_short | near effect |\n| long | outcome_long | lasting effect |\n\nBlank `owner` flags **UNOWNED**. Filled `renamed_from` flags **RENAMED**. `confidence` is observer-assigned (not a truth score). Path B: append only; do not rewrite a hashed cell. A later long outcome is a new row that cites the old `row_hash`.\n\n## Example\n\n```bash\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A \'Mozilla/5.0\' -X POST https://employeelock-download-tracker.vibelock.workers.dev/v1/append-preview \\\n  -H \'content-type: application/json\' \\\n  -d \'{"event":"desk closed","result":"logged","blame":"","owner":"records desk","short":"row added","long":"chain grew","confidence":0.7}\'\ncurl -s -A \'Mozilla/5.0\' https://aziel-runtime.vibelock.workers.dev/p/employeelock/skill\n```\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash\nemployeelock ui\nemployeelock doctor\npython3 employeelock.py verify WORKBOOK.xlsx\n```\n\nPaper: EL-WP-0.1 · DOI https://doi.org/10.5281/zenodo.22257493 · Apache-2.0. Forks welcome.\n';
 const LIMITATION =
   "THIS IS: workbook (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init/append/import/verify) + linear hash chain + countermeasure against unowned/renamed rows. THIS IS NOT: UL or a BAL issue paper; FoldLock; TemporalLock (borrows ethic, different product); court filing / exhibit stickerer / counsel; truth score / consensus / token; remote uploader / anonymous relay; a charge sheet against a named living person. Demo rows are generic format proof, not case facts. Hosted API never stores xlsx. Not a court. Not UL. Not a truth score.";
 
@@ -210,6 +212,13 @@ function openapiSpec(origin) {
           responses: { "200": { description: "ok + row_hash" } },
         },
       },
+      "/v1/skill": {
+        get: {
+          operationId: "employeelock_skill",
+          summary: "Return EmployeeLock skill markdown. Does not increment downloads or views. Hosted never stores xlsx.",
+          responses: { "200": { description: "text/markdown skill body" } },
+        },
+      },
     },
   };
 }
@@ -231,6 +240,7 @@ function aiHtml(origin) {
 <p>OpenAPI: <a href="${origin}/openapi.json">${origin}/openapi.json</a></p>
 <p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a></p>
 <pre>curl -A Mozilla/5.0 ${origin}/v1/health
+curl -A Mozilla/5.0 ${origin}/v1/skill
 curl -A Mozilla/5.0 -X POST ${origin}/v1/append-preview -H 'content-type: application/json' \\
   -d '{"event":"desk closed","result":"logged","owner_named":"records desk","confidence":0.7}'
 curl -A Mozilla/5.0 -X POST ${origin}/v1/verify-canonical -H 'content-type: application/json' \\
@@ -252,6 +262,11 @@ function mcpTools() {
       name: "employeelock_verify-canonical",
       description: "Recompute SHA-256 of posted canonical JSON or fields.",
       inputSchema: { type: "object", additionalProperties: true },
+    },
+    {
+      name: "employeelock_skill",
+      description: "Return EmployeeLock skill markdown. Does not increment downloads or views.",
+      inputSchema: { type: "object" },
     },
   ];
 }
@@ -301,6 +316,8 @@ async function handleMcp(request) {
       payload = await appendPreview(args);
     } else if (name === "employeelock_verify-canonical") {
       payload = await verifyCanonical(args);
+    } else if (name === "employeelock_skill") {
+      payload = { markdown: SKILL, kv_increment: false, stored: false, limitation: LIMITATION };
     } else {
       payload = { error: "unknown tool", name };
     }
@@ -312,6 +329,16 @@ async function handleMcp(request) {
 export async function handleRuntimeApi(request, url) {
   const path = url.pathname.replace(/\/+$/, "") || "/";
   if (path === "/mcp") return handleMcp(request);
+  if (path === "/v1/skill" && request.method === "GET") {
+    return new Response(SKILL, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Cache-Control": "private, no-store",
+        ...corsHeaders(),
+      },
+    });
+  }
   if (path === "/v1/health" && request.method === "GET") {
     return json({
       ok: true,
@@ -351,7 +378,7 @@ export async function handleRuntimeApi(request, url) {
     return json(await verifyCanonical(body));
   }
   if (path.startsWith("/v1/") || path === "/v1") {
-    return json({ error: "not found", hint: "GET /v1/health  POST /v1/append-preview  POST /v1/verify-canonical", limitation: LIMITATION }, 404);
+    return json({ error: "not found", hint: "GET /v1/health  GET /v1/skill  POST /v1/append-preview  POST /v1/verify-canonical", limitation: LIMITATION }, 404);
   }
   return null;
 }

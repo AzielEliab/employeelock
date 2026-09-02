@@ -125,12 +125,28 @@ flutter run
 The Worker hosts a **stateless** preview API. It never stores xlsx.
 
 - `GET /v1/health`
+- `GET /v1/skill` — skill markdown (not counted)
 - `POST /v1/append-preview` — hash a proposed row without writing a file
 - `POST /v1/verify-canonical` — recompute hash of posted canonical
 - OpenAPI: `/openapi.json`
 - MCP: catalog `https://aziel-runtime.vibelock.workers.dev/mcp` and this Worker `/mcp`
 
 Banner: not a court, not UL, not a truth score.
+
+## For AI assistants (Grok / ChatGPT / Venice)
+
+Import OpenAPI or MCP. This repo also ships [`SKILL.md`](SKILL.md) so an assistant can log or verify a row.
+
+- Skill (repo): [`SKILL.md`](SKILL.md)
+- Skill (live markdown, not counted): [GET /v1/skill](https://employeelock-download-tracker.vibelock.workers.dev/v1/skill)
+- Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json
+- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
+- MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
+
+Send `User-Agent: Mozilla/5.0`. Hosted never stores xlsx. Kid-plain fields: event, result, blame, owner, short, long.
+
+Counted download (same Worker, gzip HTTP 200, no 302):
+[employeelock-0.1.0.tar.gz](https://employeelock-download-tracker.vibelock.workers.dev/download?asset=employeelock-0.1.0.tar.gz)
 
 ## Papers
 

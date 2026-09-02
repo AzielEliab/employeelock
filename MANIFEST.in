@@ -6,6 +6,7 @@ include .gitignore
 include install.sh
 include employeelock.py
 include AGENTS.md
+include SKILL.md
 graft docs
 graft examples
 graft tests
