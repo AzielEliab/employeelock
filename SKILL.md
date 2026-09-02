@@ -70,3 +70,5 @@ python3 employeelock.py verify WORKBOOK.xlsx
 ```
 
 Paper: EL-WP-0.1 · DOI https://doi.org/10.5281/zenodo.22257493 · Apache-2.0. Forks welcome.
+
+Local UI: Import JSON file and Export JSON. Sample payload: GET https://employeelock-download-tracker.vibelock.workers.dev/v1/example

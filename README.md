@@ -177,6 +177,15 @@ Covers genesis hash, second-row link, blank owner → UNOWNED,
 renamed_from → RENAMED, verify catching an edited event, missing file
 reported, import hashing file bytes.
 
+## Use with Grok / ChatGPT / Venice
+
+Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
+Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
+This Worker skill: https://employeelock-download-tracker.vibelock.workers.dev/v1/skill
+This Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json
+
+Grok: import the catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions (no auth). Venice: HTTP tools. Always send `User-Agent: Mozilla/5.0`.
+
 ## Cite this
 
 Aziel Eliab. EmployeeLock. https://github.com/AzielEliab/employeelock. https://employeelock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22257493.

@@ -3,6 +3,13 @@
  * /v1 never touches DOWNLOADS KV.
  */
 const PRODUCT = "employeelock";
+const EXAMPLE_PAYLOAD = {
+  "event": "process outcome recorded with no named owner",
+  "result": "row logged as format proof",
+  "owner_named": "",
+  "confidence": 0.7
+};
+
 const VERSION = "0.1.0";
 const SPEC = "employeelock-v0";
 const HOST = "https://employeelock-download-tracker.vibelock.workers.dev";
@@ -11,7 +18,7 @@ const GENESIS_PREV = "0".repeat(64);
 const CONF_PLACEHOLDER = "__EL_CONFIDENCE__";
 const PROTOCOL = "2025-03-26";
 
-const SKILL = '---\nname: EmployeeLock\ndescription: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime.\n---\n\n# EmployeeLock\n\nHash-chained accountability workbook. Local CLI + sheet. Author: **Aziel Eliab**.\n\n**THIS IS:** workbook + hash chain (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init / append / import / verify / ui / doctor).\n\n**THIS IS NOT:** a court filing, exhibit stickerer, counsel, UL or BAL paper, truth score, consensus, token, remote uploader, or a charge sheet. Hosted `/v1` never stores xlsx.\n\nHonest banner: workbook + hash chain, not a court.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Call these URLs\n\n- Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- Live skill (this markdown): `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/skill`\n\nOps (do **not** increment downloads or views):\n\n- `POST /v1/append-preview` — hash a proposed LOG row; nothing is stored\n- `POST /v1/verify-canonical` — recompute SHA-256 of posted canonical JSON or fields\n- `GET /v1/health`\n- `GET /v1/skill` — this file\n\nCatalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/verify-canonical`, `GET /p/employeelock/skill`.\n\nMCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.\n\nGrok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n\n## Kid-plain field names\n\nUse these. The hosted API also accepts the long hashed names.\n\n| kid-plain | hashed field | meaning |\n|-----------|--------------|---------|\n| event | event | what happened |\n| result | result | what followed |\n| blame | blame_placed | who is responsible, or blank |\n| owner | owner_named | who owns the record. blank → UNOWNED |\n| short | outcome_short | near effect |\n| long | outcome_long | lasting effect |\n\nBlank `owner` flags **UNOWNED**. Filled `renamed_from` flags **RENAMED**. `confidence` is observer-assigned (not a truth score). Path B: append only; do not rewrite a hashed cell. A later long outcome is a new row that cites the old `row_hash`.\n\n## Example\n\n```bash\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A \'Mozilla/5.0\' -X POST https://employeelock-download-tracker.vibelock.workers.dev/v1/append-preview \\\n  -H \'content-type: application/json\' \\\n  -d \'{"event":"desk closed","result":"logged","blame":"","owner":"records desk","short":"row added","long":"chain grew","confidence":0.7}\'\ncurl -s -A \'Mozilla/5.0\' https://aziel-runtime.vibelock.workers.dev/p/employeelock/skill\n```\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash\nemployeelock ui\nemployeelock doctor\npython3 employeelock.py verify WORKBOOK.xlsx\n```\n\nPaper: EL-WP-0.1 · DOI https://doi.org/10.5281/zenodo.22257493 · Apache-2.0. Forks welcome.\n';
+const SKILL = '---\nname: EmployeeLock\ndescription: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime.\n---\n\n# EmployeeLock\n\nHash-chained accountability workbook. Local CLI + sheet. Author: **Aziel Eliab**.\n\n**THIS IS:** workbook + hash chain (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init / append / import / verify / ui / doctor).\n\n**THIS IS NOT:** a court filing, exhibit stickerer, counsel, UL or BAL paper, truth score, consensus, token, remote uploader, or a charge sheet. Hosted `/v1` never stores xlsx.\n\nHonest banner: workbook + hash chain, not a court.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Call these URLs\n\n- Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- Live skill (this markdown): `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/skill`\n\nOps (do **not** increment downloads or views):\n\n- `POST /v1/append-preview` \u00e2\u0080\u0094 hash a proposed LOG row; nothing is stored\n- `POST /v1/verify-canonical` \u00e2\u0080\u0094 recompute SHA-256 of posted canonical JSON or fields\n- `GET /v1/health`\n- `GET /v1/skill` \u00e2\u0080\u0094 this file\n\nCatalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/verify-canonical`, `GET /p/employeelock/skill`.\n\nMCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.\n\nGrok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n\n## Kid-plain field names\n\nUse these. The hosted API also accepts the long hashed names.\n\n| kid-plain | hashed field | meaning |\n|-----------|--------------|---------|\n| event | event | what happened |\n| result | result | what followed |\n| blame | blame_placed | who is responsible, or blank |\n| owner | owner_named | who owns the record. blank \u00e2\u0086\u0092 UNOWNED |\n| short | outcome_short | near effect |\n| long | outcome_long | lasting effect |\n\nBlank `owner` flags **UNOWNED**. Filled `renamed_from` flags **RENAMED**. `confidence` is observer-assigned (not a truth score). Path B: append only; do not rewrite a hashed cell. A later long outcome is a new row that cites the old `row_hash`.\n\n## Example\n\n```bash\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A \'Mozilla/5.0\' -X POST https://employeelock-download-tracker.vibelock.workers.dev/v1/append-preview \\\n  -H \'content-type: application/json\' \\\n  -d \'{\"event\":\"desk closed\",\"result\":\"logged\",\"blame\":\"\",\"owner\":\"records desk\",\"short\":\"row added\",\"long\":\"chain grew\",\"confidence\":0.7}\'\ncurl -s -A \'Mozilla/5.0\' https://aziel-runtime.vibelock.workers.dev/p/employeelock/skill\n```\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash\nemployeelock ui\nemployeelock doctor\npython3 employeelock.py verify WORKBOOK.xlsx\n```\n\nPaper: EL-WP-0.1 \u00c2\u00b7 DOI https://doi.org/10.5281/zenodo.22257493 \u00c2\u00b7 Apache-2.0. Forks welcome.\n\nLocal UI: Import JSON file and Export JSON. Sample payload: GET https://employeelock-download-tracker.vibelock.workers.dev/v1/example\n';
 const LIMITATION =
   "THIS IS: workbook (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init/append/import/verify) + linear hash chain + countermeasure against unowned/renamed rows. THIS IS NOT: UL or a BAL issue paper; FoldLock; TemporalLock (borrows ethic, different product); court filing / exhibit stickerer / counsel; truth score / consensus / token; remote uploader / anonymous relay; a charge sheet against a named living person. Demo rows are generic format proof, not case facts. Hosted API never stores xlsx. Not a court. Not UL. Not a truth score.";
 
@@ -173,6 +180,7 @@ function openapiSpec(origin) {
     },
     servers: [{ url: origin }],
     paths: {
+            "/v1/example": { get: { operationId: "employeelockExample", summary: "Sample JSON payload. Does not increment downloads.", responses: { "200": { description: "OK" } } } },
       "/v1/health": {
         get: {
           operationId: "employeelock_health",
@@ -353,6 +361,16 @@ export async function handleRuntimeApi(request, url) {
       author: "Aziel Eliab",
     });
   }
+  if ((path === "/v1/example" || path === "/v1/example/") && (request.method === "GET" || request.method === "HEAD")) {
+    return json({
+      ok: true,
+      product: PRODUCT,
+      author: "Aziel Eliab",
+      example: EXAMPLE_PAYLOAD,
+      note: "Sample payload only. Does not increment downloads.",
+    });
+  }
+
   if (path === "/openapi.json" && request.method === "GET") {
     return json(openapiSpec(originOf(request)));
   }
