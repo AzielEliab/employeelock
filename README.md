@@ -133,7 +133,9 @@ The Worker hosts a **stateless** preview API. It never stores xlsx.
 
 Banner: not a court, not UL, not a truth score.
 
-## For AI assistants (Grok / ChatGPT / Venice)
+## For AI assistants
+
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
 
 Import OpenAPI or MCP. This repo also ships [`SKILL.md`](SKILL.md) so an assistant can log or verify a row.
 
@@ -177,14 +179,23 @@ Covers genesis hash, second-row link, blank owner → UNOWNED,
 renamed_from → RENAMED, verify catching an edited event, missing file
 reported, import hashing file bytes.
 
-## Use with Grok / ChatGPT / Venice
+## Use with AI assistants
+
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
 
 Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
 Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 This Worker skill: https://employeelock-download-tracker.vibelock.workers.dev/v1/skill
 This Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json
 
-Grok: import the catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions (no auth). Venice: HTTP tools. Always send `User-Agent: Mozilla/5.0`.
+- **ChatGPT (GPT Actions / OpenAI)** — GPT Actions (no auth): import the catalog or Worker OpenAPI.
+- **Grok (xAI)** — custom tool / OpenAPI / MCP remote.
+- **Venice** — HTTP tools / OpenAPI.
+- **Claude (Anthropic)** — MCP or OpenAPI tools.
+- **Cursor (MCP)** and **Glama (MCP)** — catalog MCP.
+- **Perplexity**, **Microsoft Copilot / Bing**, **Google Gemini / Vertex**, **Mistral**, **Meta AI**, **Apple Intelligence surfaces**, **Amazon Q tooling**, **DuckAssist**, **You.com**, **Cohere**, and other MCP/OpenAPI-capable assistants — same OpenAPI or MCP endpoint.
+
+Always send `User-Agent: Mozilla/5.0`.
 
 ## Cite this
 

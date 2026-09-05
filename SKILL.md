@@ -33,7 +33,9 @@ Catalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/ve
 
 MCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.
 
-Grok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+
+ChatGPT: GPT Actions (import OpenAPI). Grok: custom tool / OpenAPI / MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: catalog MCP. Remaining OpenAPI-capable assistants: same Worker or catalog `/openapi.json`.
 
 ## Kid-plain field names
 
