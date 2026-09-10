@@ -422,8 +422,17 @@ async function originFetch(env, pathAndQuery, init, request) {
   const door_url = joinOriginUrl(runtimeOrigin(env), path);
   const bind = runtimeService(env);
   if (bind) {
-    const res = await bind.fetch(new Request(SERVICE_BINDING_ORIGIN + path, next));
-    return { res, via: "service-binding", door_url };
+    try {
+      const res = await bind.fetch(new Request(SERVICE_BINDING_ORIGIN + path, next));
+      const ct = String(res.headers.get("Content-Type") || "").toLowerCase();
+      const looksJson = ct.includes("application/json") || ct.includes("+json");
+      // Keep real door JSON (200 or 4xx MESH-*). Binding stub / 5xx / non-JSON → HTTPS fallback.
+      if (looksJson && (res.ok || res.status < 500)) {
+        return { res, via: "service-binding", door_url };
+      }
+    } catch {
+      /* HTTPS fallback when AZIEL_RUNTIME is missing or not connected */
+    }
   }
 
   try {

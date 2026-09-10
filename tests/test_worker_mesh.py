@@ -52,6 +52,7 @@ def test_mesh_proxies_via_aziel_runtime() -> None:
     assert '"/v1/mesh"' in MESH
     assert 'startsWith("/v1/mesh/")' in MESH
     assert "AZIEL_RUNTIME" in MESH
+    assert "HTTPS fallback" in MESH
     assert "AZIEL_RUNTIME" in WRANGLER
     assert "aziel-runtime" in WRANGLER
     assert "/v1/mesh" in WRANGLER
