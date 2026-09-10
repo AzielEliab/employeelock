@@ -55,6 +55,7 @@ Direct tarball (also counted):
 
 - Live count JSON: [https://employeelock-download-tracker.vibelock.workers.dev/stats](https://employeelock-download-tracker.vibelock.workers.dev/stats)
 - OpenAPI: [https://employeelock-download-tracker.vibelock.workers.dev/openapi.json](https://employeelock-download-tracker.vibelock.workers.dev/openapi.json)
+- Suite mesh proxy: [https://employeelock-download-tracker.vibelock.workers.dev/v1/mesh](https://employeelock-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated
 - GitHub: [https://github.com/AzielEliab/employeelock](https://github.com/AzielEliab/employeelock)
 
 Isolated counter: Worker `employeelock-download-tracker`, KV `EMPLOYEELOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads.
@@ -126,10 +127,11 @@ The Worker hosts a **stateless** preview API. It never stores xlsx.
 
 - `GET /v1/health`
 - `GET /v1/skill` — skill markdown (not counted)
+- `GET /v1/mesh` — PROXY suite mesh status (default OFF; QNM live|locked|isolated)
 - `POST /v1/append-preview` — hash a proposed row without writing a file
 - `POST /v1/verify-canonical` — recompute hash of posted canonical
 - OpenAPI: `/openapi.json`
-- MCP: catalog `https://aziel-runtime.vibelock.workers.dev/mcp` and this Worker `/mcp`
+- MCP: catalog `https://aziel-runtime.vibelock.workers.dev/mcp` and this Worker `/mcp`. Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; no Node Gate). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
 
 Banner: not a court, not UL, not a truth score.
 
