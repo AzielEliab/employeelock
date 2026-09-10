@@ -35,7 +35,7 @@ No network. No ML.
 7. **Public identity is Aziel Eliab.** Do not add GodLock.AZ as an
    identity label. GodLock is a sibling product name in the mesh.
 8. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
-   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   Suite mesh default OFF; QNM rollup live|locked|isolated; QNS-CD-1.0 photon QNS1 cross-map (not Softwares-tab; no public qnsd proxy); no Node Gate;
    no auto-heal; not anonymity.
 9. New behavior needs a test that fails without the change.
 10. Canonical JSON: UTF-8, sorted keys, compact separators, confidence
@@ -50,7 +50,7 @@ No network. No ML.
 - Spec: `docs/whitepaper.md`
 - Flutter: `mobile/`
 - Isolated counter: `workers/download-tracker/`
-- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
+- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime; QNS-CD-1.0 cross-map cite).
 
 ## License of contributions
 

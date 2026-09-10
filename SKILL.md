@@ -1,6 +1,6 @@
 ---
 name: EmployeeLock
-description: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
+description: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer cross-map (hub cite only; not Softwares-tab; no public qnsd proxy). No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
 ---
 
 # EmployeeLock
@@ -21,7 +21,7 @@ Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent
 - Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
 - MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 - Live skill (this markdown): `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/skill`
-- Suite mesh: `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/mesh` (PROXY; default OFF)
+- Suite mesh: `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/mesh` (PROXY; default OFF; QNS-CD-1.0 cross-map)
 
 Ops (do **not** increment downloads or views):
 
@@ -29,7 +29,7 @@ Ops (do **not** increment downloads or views):
 - `POST /v1/verify-canonical` — recompute SHA-256 of posted canonical JSON or fields
 - `GET /v1/health`
 - `GET /v1/skill` — this file
-- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables.
+- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer cross-map (hub cite / Worker mesh only). Never enables. No public qnsd proxy.
 - `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence).
 - `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.
 
@@ -37,7 +37,7 @@ Catalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/ve
 
 MCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.
 
-Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Catalog MCP `mesh_*` + FragGate `slug=mesh`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity.
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Catalog MCP `mesh_*` + FragGate `slug=mesh`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (not a Softwares-tab product; local qnsd in https://github.com/AzielEliab/qnm-node; runtime cites in https://github.com/AzielEliab/aziel-runtime; AZInterface pair custody). No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity.
 
 ChatGPT: GPT Actions (import OpenAPI). Grok: custom tool / OpenAPI / MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: catalog MCP. Remaining OpenAPI-capable assistants: same Worker or catalog `/openapi.json`.
 
@@ -79,4 +79,4 @@ python3 employeelock.py verify WORKBOOK.xlsx
 
 Paper: EL-WP-0.1 · DOI https://doi.org/10.5281/zenodo.22257493 · Apache-2.0. Forks welcome.
 
-Local UI: Import JSON file and Export JSON. Sample payload: GET https://employeelock-download-tracker.vibelock.workers.dev/v1/example. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).
+Local UI: Import JSON file and Export JSON. Sample payload: GET https://employeelock-download-tracker.vibelock.workers.dev/v1/example. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF). Mesh status / Live Nodes payload includes the QNS-CD-1.0 cross-map.
