@@ -1,7 +1,9 @@
 /**
  * EmployeeLock hosted runtime. Hash a proposed row; never store xlsx.
  * /v1 never touches DOWNLOADS KV.
+ * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
+import { meshOpenApiPaths, meshPointer } from "./mesh.js";
 const PRODUCT = "employeelock";
 const EXAMPLE_PAYLOAD = {
   "event": "process outcome recorded with no named owner",
@@ -18,7 +20,7 @@ const GENESIS_PREV = "0".repeat(64);
 const CONF_PLACEHOLDER = "__EL_CONFIDENCE__";
 const PROTOCOL = "2025-03-26";
 
-const SKILL = '---\nname: EmployeeLock\ndescription: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime.\n---\n\n# EmployeeLock\n\nHash-chained accountability workbook. Local CLI + sheet. Author: **Aziel Eliab**.\n\n**THIS IS:** workbook + hash chain (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init / append / import / verify / ui / doctor).\n\n**THIS IS NOT:** a court filing, exhibit stickerer, counsel, UL or BAL paper, truth score, consensus, token, remote uploader, or a charge sheet. Hosted `/v1` never stores xlsx.\n\nHonest banner: workbook + hash chain, not a court.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Call these URLs\n\n- Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- Live skill (this markdown): `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/skill`\n\nOps (do **not** increment downloads or views):\n\n- `POST /v1/append-preview` — hash a proposed LOG row; nothing is stored\n- `POST /v1/verify-canonical` — recompute SHA-256 of posted canonical JSON or fields\n- `GET /v1/health`\n- `GET /v1/skill` — this file\n\nCatalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/verify-canonical`, `GET /p/employeelock/skill`.\n\nMCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.\n\nWorks with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.\n\nChatGPT: GPT Actions (import OpenAPI). Grok: custom tool / OpenAPI / MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: catalog MCP. Remaining OpenAPI-capable assistants: same Worker or catalog `/openapi.json`.\n\n## Kid-plain field names\n\nUse these. The hosted API also accepts the long hashed names.\n\n| kid-plain | hashed field | meaning |\n|-----------|--------------|---------|\n| event | event | what happened |\n| result | result | what followed |\n| blame | blame_placed | who is responsible, or blank |\n| owner | owner_named | who owns the record. blank → UNOWNED |\n| short | outcome_short | near effect |\n| long | outcome_long | lasting effect |\n\nBlank `owner` flags **UNOWNED**. Filled `renamed_from` flags **RENAMED**. `confidence` is observer-assigned (not a truth score). Path B: append only; do not rewrite a hashed cell. A later long outcome is a new row that cites the old `row_hash`.\n\n## Example\n\n```bash\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A \'Mozilla/5.0\' -X POST https://employeelock-download-tracker.vibelock.workers.dev/v1/append-preview \\\n  -H \'content-type: application/json\' \\\n  -d \'{"event":"desk closed","result":"logged","blame":"","owner":"records desk","short":"row added","long":"chain grew","confidence":0.7}\'\ncurl -s -A \'Mozilla/5.0\' https://aziel-runtime.vibelock.workers.dev/p/employeelock/skill\n```\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash\nemployeelock ui\nemployeelock doctor\npython3 employeelock.py verify WORKBOOK.xlsx\n```\n\nPaper: EL-WP-0.1 · DOI https://doi.org/10.5281/zenodo.22257493 · Apache-2.0. Forks welcome.\n\nLocal UI: Import JSON file and Export JSON. Sample payload: GET https://employeelock-download-tracker.vibelock.workers.dev/v1/example\n';
+const SKILL = '---\nname: EmployeeLock\ndescription: Use when an assistant should log an accountability row or verify an EmployeeLock workbook via hosted /v1 (append-preview, verify-canonical) or aziel-runtime. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.\n---\n\n# EmployeeLock\n\nHash-chained accountability workbook. Local CLI + sheet. Author: **Aziel Eliab**.\n\n**THIS IS:** workbook + hash chain (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init / append / import / verify / ui / doctor).\n\n**THIS IS NOT:** a court filing, exhibit stickerer, counsel, UL or BAL paper, truth score, consensus, token, remote uploader, or a charge sheet. Hosted `/v1` never stores xlsx.\n\nHonest banner: workbook + hash chain, not a court.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Call these URLs\n\n- Worker OpenAPI: https://employeelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- Live skill (this markdown): `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/skill`\n- Suite mesh: `GET https://employeelock-download-tracker.vibelock.workers.dev/v1/mesh` (PROXY; default OFF)\n\nOps (do **not** increment downloads or views):\n\n- `POST /v1/append-preview` — hash a proposed LOG row; nothing is stored\n- `POST /v1/verify-canonical` — recompute SHA-256 of posted canonical JSON or fields\n- `GET /v1/health`\n- `GET /v1/skill` — this file\n- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables.\n- `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence).\n- `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.\n\nCatalog aliases: `POST /p/employeelock/append-preview`, `POST /p/employeelock/verify-canonical`, `GET /p/employeelock/skill`.\n\nMCP tools: `employeelock_append-preview`, `employeelock_verify-canonical`, `employeelock_health`, `employeelock_skill`.\n\nWorks with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Catalog MCP `mesh_*` + FragGate `slug=mesh`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity.\n\nChatGPT: GPT Actions (import OpenAPI). Grok: custom tool / OpenAPI / MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: catalog MCP. Remaining OpenAPI-capable assistants: same Worker or catalog `/openapi.json`.\n\n## Kid-plain field names\n\nUse these. The hosted API also accepts the long hashed names.\n\n| kid-plain | hashed field | meaning |\n|-----------|--------------|---------|\n| event | event | what happened |\n| result | result | what followed |\n| blame | blame_placed | who is responsible, or blank |\n| owner | owner_named | who owns the record. blank → UNOWNED |\n| short | outcome_short | near effect |\n| long | outcome_long | lasting effect |\n\nBlank `owner` flags **UNOWNED**. Filled `renamed_from` flags **RENAMED**. `confidence` is observer-assigned (not a truth score). Path B: append only; do not rewrite a hashed cell. A later long outcome is a new row that cites the old `row_hash`.\n\n## Example\n\n```bash\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/skill\ncurl -s -A \'Mozilla/5.0\' https://employeelock-download-tracker.vibelock.workers.dev/v1/mesh\ncurl -s -A \'Mozilla/5.0\' -X POST https://employeelock-download-tracker.vibelock.workers.dev/v1/append-preview \\\n  -H \'content-type: application/json\' \\\n  -d \'{"event":"desk closed","result":"logged","blame":"","owner":"records desk","short":"row added","long":"chain grew","confidence":0.7}\'\ncurl -s -A \'Mozilla/5.0\' https://aziel-runtime.vibelock.workers.dev/p/employeelock/skill\n```\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash\nemployeelock ui\nemployeelock doctor\npython3 employeelock.py verify WORKBOOK.xlsx\n```\n\nPaper: EL-WP-0.1 · DOI https://doi.org/10.5281/zenodo.22257493 · Apache-2.0. Forks welcome.\n\nLocal UI: Import JSON file and Export JSON. Sample payload: GET https://employeelock-download-tracker.vibelock.workers.dev/v1/example. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).\n';
 const LIMITATION =
   "THIS IS: workbook (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init/append/import/verify) + linear hash chain + countermeasure against unowned/renamed rows. THIS IS NOT: UL or a BAL issue paper; FoldLock; TemporalLock (borrows ethic, different product); court filing / exhibit stickerer / counsel; truth score / consensus / token; remote uploader / anonymous relay; a charge sheet against a named living person. Demo rows are generic format proof, not case facts. Hosted API never stores xlsx. Not a court. Not UL. Not a truth score.";
 
@@ -42,8 +44,8 @@ const HASHED_FIELDS = [
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Accept, MCP-Protocol-Version, mcp-session-id",
+    "Access-Control-Allow-Methods": "GET, POST, HEAD, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Accept, Authorization, X-Aziel-Runtime-Token, User-Agent, MCP-Protocol-Version, mcp-session-id",
   };
 }
 
@@ -174,13 +176,14 @@ function openapiSpec(origin) {
       title: "EmployeeLock runtime",
       version: VERSION,
       summary: "Hash-chained accountability workbook preview. Not a court. Not UL. Not a truth score.",
-      description: LIMITATION,
+      description: LIMITATION + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Aziel Eliab only.",
       license: { name: "Apache-2.0", identifier: "Apache-2.0" },
       contact: { name: "Aziel Eliab", url: "https://github.com/AzielEliab/employeelock" },
     },
     servers: [{ url: origin }],
     paths: {
             "/v1/example": { get: { operationId: "employeelockExample", summary: "Sample JSON payload. Does not increment downloads.", responses: { "200": { description: "OK" } } } },
+      ...meshOpenApiPaths(),
       "/v1/health": {
         get: {
           operationId: "employeelock_health",
@@ -247,9 +250,11 @@ function aiHtml(origin) {
 <p class="banner">${LIMITATION}</p>
 <p>Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.</p>
 <p>OpenAPI: <a href="${origin}/openapi.json">${origin}/openapi.json</a></p>
-<p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a></p>
+<p>MCP: POST <code>${origin}/mcp</code> · Catalog: <a href="${CATALOG}/">${CATALOG}</a> (catalog <code>mesh_*</code> + FragGate <code>slug=mesh</code>)</p>
+<p>Suite mesh: <code>GET ${origin}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
 <pre>curl -A Mozilla/5.0 ${origin}/v1/health
 curl -A Mozilla/5.0 ${origin}/v1/skill
+curl -A Mozilla/5.0 ${origin}/v1/mesh
 curl -A Mozilla/5.0 -X POST ${origin}/v1/append-preview -H 'content-type: application/json' \\
   -d '{"event":"desk closed","result":"logged","owner_named":"records desk","confidence":0.7}'
 curl -A Mozilla/5.0 -X POST ${origin}/v1/verify-canonical -H 'content-type: application/json' \\
@@ -337,6 +342,7 @@ async function handleMcp(request) {
 
 export async function handleRuntimeApi(request, url) {
   const path = url.pathname.replace(/\/+$/, "") || "/";
+  if (path === "/v1/mesh" || path.startsWith("/v1/mesh/")) return null;
   if (path === "/mcp") return handleMcp(request);
   if (path === "/v1/skill" && request.method === "GET") {
     return new Response(SKILL, {
@@ -360,6 +366,7 @@ export async function handleRuntimeApi(request, url) {
       limitation: LIMITATION,
       catalog: CATALOG,
       author: "Aziel Eliab",
+      mesh: meshPointer(),
     });
   }
   if ((path === "/v1/example" || path === "/v1/example/") && (request.method === "GET" || request.method === "HEAD")) {
@@ -397,7 +404,7 @@ export async function handleRuntimeApi(request, url) {
     return json(await verifyCanonical(body));
   }
   if (path.startsWith("/v1/") || path === "/v1") {
-    return json({ error: "not found", hint: "GET /v1/health  GET /v1/skill  POST /v1/append-preview  POST /v1/verify-canonical", limitation: LIMITATION }, 404);
+    return json({ error: "not found", hint: "GET /v1/health  GET /v1/skill  POST /v1/append-preview  POST /v1/verify-canonical  GET /v1/mesh", limitation: LIMITATION }, 404);
   }
   return null;
 }

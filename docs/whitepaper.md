@@ -235,6 +235,12 @@ Those two rows travel with the workbook so the sheet is not empty. Replace them 
 | GodLock | Public ABAD node. Not this sheet. |
 | UL / BAL | Issue papers stay issue papers. EmployeeLock cites the cluster and refuses to be filed as UL. |
 
+The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
+to aziel-runtime. Suite mesh default OFF. QNM rollup is
+live|locked|isolated counts only. No Node Gate. No auto-heal. Not an
+anonymity network. Anon-broadcast is not a publish path. EmployeeLock
+remains a hash-chained accountability workbook. Hosted never stores xlsx.
+
 ## 13. Limits
 
 EmployeeLock v0 does not:

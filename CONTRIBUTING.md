@@ -34,8 +34,11 @@ No network. No ML.
    or KV. Namespace `EMPLOYEELOCK_DOWNLOADS` only.
 7. **Public identity is Aziel Eliab.** Do not add GodLock.AZ as an
    identity label. GodLock is a sibling product name in the mesh.
-8. New behavior needs a test that fails without the change.
-9. Canonical JSON: UTF-8, sorted keys, compact separators, confidence
+8. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
+   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   no auto-heal; not anonymity.
+9. New behavior needs a test that fails without the change.
+10. Canonical JSON: UTF-8, sorted keys, compact separators, confidence
    forced to six decimal places. Genesis `prev_hash` is 64 ASCII zeros.
 
 ## Where to change things
@@ -47,6 +50,7 @@ No network. No ML.
 - Spec: `docs/whitepaper.md`
 - Flutter: `mobile/`
 - Isolated counter: `workers/download-tracker/`
+- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
 
 ## License of contributions
 
