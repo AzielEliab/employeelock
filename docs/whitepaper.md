@@ -237,9 +237,13 @@ Those two rows travel with the workbook so the sheet is not empty. Replace them 
 
 The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
 to aziel-runtime. Suite mesh default OFF. QNM rollup is
-live|locked|isolated counts only. No Node Gate. No auto-heal. Not an
-anonymity network. Anon-broadcast is not a publish path. EmployeeLock
-remains a hash-chained accountability workbook. Hosted never stores xlsx.
+live|locked|isolated counts only. QNS-CD-1.0 photon QNS1 packet transfer
+is a hub cite / Worker mesh cross-map only (not a Softwares-tab product;
+no public qnsd proxy). Local qnsd is coded in qnm-node. Runtime cites
+live in aziel-runtime. AZInterface has pair custody. No Node Gate. No
+auto-heal. Not an anonymity network. Anon-broadcast is not a publish
+path. EmployeeLock remains a hash-chained accountability workbook.
+Hosted never stores xlsx.
 
 ## 13. Limits
 
