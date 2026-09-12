@@ -302,9 +302,11 @@ async function indexHtml(env) {
 <meta name="description" content="Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab; not a court filing.">
 <meta name="author" content="Aziel Eliab">
 <link rel="canonical" href="https://employeelock-download-tracker.vibelock.workers.dev/">
+<link rel="icon" href="/sigil.png" type="image/png">
 <meta property="og:title" content="EmployeeLock — Aziel Eliab">
 <meta property="og:description" content="Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab; not a court filing.">
 <meta property="og:url" content="https://employeelock-download-tracker.vibelock.workers.dev/">
+<meta property="og:image" content="https://employeelock-download-tracker.vibelock.workers.dev/sigil.png">
 <meta property="og:type" content="website">
 <script type="application/ld+json">
 {
@@ -327,6 +329,8 @@ async function indexHtml(env) {
 <style>
   :root { color-scheme: dark; }
   body { font: 16px/1.45 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem 4rem; background: #0e1014; color: #e8eaef; }
+  .brandrow { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin: 0 0 1.15rem; }
+  .brandmark { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex: 0 0 auto; box-shadow: 0 0 0 1px #d4af3733; }
   h1 { font-size: 1.75rem; margin: 0 0 .35rem; }
   .motto { color: #9aa3b2; margin: 0 0 1.5rem; }
   .card { border: 1px solid #2a3140; border-radius: 12px; padding: 1.25rem 1.35rem; background: #151922; }
@@ -362,6 +366,7 @@ async function indexHtml(env) {
   #meshProducts { flex-basis: 100%; margin: 0; }
 </style>
 <body>
+  <div class="brandrow"><img class="brandmark" src="/sigil.png" width="40" height="40" alt="" decoding="async"></div>
   <h1>EmployeeLock</h1>
   <p class="motto">Hash-chained accountability workbook. Local CLI + sheet. Author Aziel Eliab.</p>
   <p class="banner">${LIMITATION}</p>
