@@ -82,6 +82,22 @@ def test_everblooming_header_skill_contracts_unchanged() -> None:
     assert "Everblooming sigil" not in RUNTIME
 
 
+def test_homepage_download_is_the_primary_action() -> None:
+    html = _homepage_html()
+    assert 'id="downloadBtn"' in html
+    assert 'class="btn block primary"' in html
+    assert 'href="/download?asset=${DEFAULT_ASSET}"' in html
+    assert 'const DEFAULT_ASSET = "employeelock-0.1.0.tar.gz"' in INDEX
+    assert ">Download</a>" in html
+    assert '<footer class="quiet">' in html
+    assert ":focus-visible" in html
+    assert "prefers-color-scheme: light" in html
+    assert html.index('id="downloadBtn"') < html.index('id="meshStrip"')
+    assert html.index('id="downloadBtn"') < html.index('class="count"')
+    assert "THIS IS NOT" not in html
+    assert "<p class=\"count\">" in html
+
+
 def test_fraggate_and_remain_off_untouched() -> None:
     assert "MESH_DEFAULT_OFF = true" in MESH
     assert "enabled_default: false" in MESH

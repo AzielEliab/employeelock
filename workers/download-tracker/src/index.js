@@ -38,8 +38,6 @@ const HOST = "https://employeelock-download-tracker.vibelock.workers.dev";
 const GITHUB_RELEASES = "https://github.com/AzielEliab/employeelock/releases";
 const GITHUB_LATEST = "https://github.com/AzielEliab/employeelock/releases/latest";
 const GITHUB_REPO = "https://github.com/AzielEliab/employeelock";
-const LIMITATION =
-  "THIS IS: workbook (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init/append/import/verify) + linear hash chain + countermeasure against unowned/renamed rows. THIS IS NOT: UL or a BAL issue paper; FoldLock; TemporalLock (borrows ethic, different product); court filing / exhibit stickerer / counsel; truth score / consensus / token; remote uploader / anonymous relay; a charge sheet against a named living person. Demo rows are generic format proof, not case facts. Not a court. Not UL. Not a truth score.";
 
 function corsHeaders() {
   return {
@@ -369,12 +367,12 @@ async function indexHtml(env) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EmployeeLock — Aziel Eliab</title>
-<meta name="description" content="Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab; not a court filing.">
+<meta name="description" content="Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab.">
 <meta name="author" content="Aziel Eliab">
 <link rel="canonical" href="https://employeelock-download-tracker.vibelock.workers.dev/">
 <link rel="icon" href="/sigil.png" type="image/png">
 <meta property="og:title" content="EmployeeLock — Aziel Eliab">
-<meta property="og:description" content="Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab; not a court filing.">
+<meta property="og:description" content="Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab.">
 <meta property="og:url" content="https://employeelock-download-tracker.vibelock.workers.dev/">
 <meta property="og:image" content="https://employeelock-download-tracker.vibelock.workers.dev/sigil.png">
 <meta property="og:type" content="website">
@@ -391,55 +389,213 @@ async function indexHtml(env) {
   "downloadUrl": "https://employeelock-download-tracker.vibelock.workers.dev/download",
   "license": "https://www.apache.org/licenses/LICENSE-2.0",
   "url": "https://employeelock-download-tracker.vibelock.workers.dev/",
-  "description": "Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab; not a court filing.",
+  "description": "Hash-chained accountability workbook with a local CLI and sheet by Aziel Eliab.",
   "identifier": "https://doi.org/10.5281/zenodo.22257493"
 }
 </script>
 <!-- gitbaby-seo -->
 <style>
-  :root { color-scheme: dark; }
-  body { font: 16px/1.45 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem 4rem; background: #0e1014; color: #e8eaef; }
-  .brandrow { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin: 0 0 1.15rem; }
+  :root {
+    color-scheme: dark;
+    --bg: #0b0b0b;
+    --panel: #141414;
+    --ink: #e8e0d0;
+    --muted: #c4b8a4;
+    --gold: #c9a227;
+    --line: #6e6456;
+    --field: #0e0e0e;
+    --control: #101010;
+    --btn-bg: #f4efe4;
+    --btn-ink: #14110a;
+    --focus: #f4efe4;
+    --link: #e6d19a;
+    --pass: #7dcea0;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #f6f3ec;
+      --panel: #fffdf8;
+      --ink: #1c1914;
+      --muted: #3f3a33;
+      --gold: #6b5410;
+      --line: #8a7b68;
+      --field: #fffdf8;
+      --control: #fffdf8;
+      --btn-bg: #1c1914;
+      --btn-ink: #f6f3ec;
+      --focus: #1c1914;
+      --link: #6b5410;
+      --pass: #7dcea0;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { overflow-x: clip; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 system-ui, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 42rem; margin: 0 auto; padding: 1.15rem 1.1rem 2.5rem; }
+  .skip {
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    transform: translateY(-120%);
+    background: var(--btn-bg);
+    color: var(--btn-ink);
+    padding: .45rem .7rem;
+    z-index: 5;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+  .skip:focus { transform: none; }
+  a:focus-visible, button:focus-visible, input:focus-visible, .skip:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .brandrow { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin: 0 0 .75rem; }
   .brandmark { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex: 0 0 auto; box-shadow: 0 0 0 1px #d4af3733; }
-  h1 { font-size: 1.75rem; margin: 0 0 .35rem; }
-  .motto { color: #9aa3b2; margin: 0 0 1.5rem; }
-  .card { border: 1px solid #2a3140; border-radius: 12px; padding: 1.25rem 1.35rem; background: #151922; }
-  .nums { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 0 0 1rem; }
-  .count { font-size: 2.2rem; font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
-  .count span { display: block; font-size: .95rem; font-weight: 500; color: #9aa3b2; }
-  a.dl { display: inline-block; margin-top: .4rem; background: #e8eaef; color: #0e1014; text-decoration: none; font-weight: 650; padding: .65rem 1rem; border-radius: 8px; }
-  .kid { font-size: 1.05rem; margin: 0 0 1rem; }
-  .btns { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0 0 .85rem; }
-  @media (max-width: 520px) { .btns { grid-template-columns: 1fr; } }
-  a.btn, button.btn { display: block; width: 100%; box-sizing: border-box; text-align: center; font: inherit; font-size: 1.2rem; font-weight: 750; padding: 1rem 1.1rem; border-radius: 10px; border: 0; cursor: pointer; text-decoration: none; }
-  a.btn.primary { background: #e8eaef; color: #0e1014; }
-  button.btn.install { background: #c9a227; color: #14110a; }
-  button.btn.install.copied { background: #7dcf9a; color: #0e1014; }
-  .meta { margin-top: 1.1rem; color: #9aa3b2; font-size: .92rem; }
-  .meta a { color: #c9d4ff; }
-  .iso { margin-top: .85rem; font-size: .85rem; color: #7d8696; }
-  .banner { border: 1px solid #5c4a1a; background: #241c0d; color: #f0d78c; padding: .85rem 1rem; border-radius: 8px; margin: 0 0 1.2rem; font-size: .92rem; }
-  pre { background: #0e1014; padding: .75rem .9rem; overflow: auto; border-radius: 8px; font-size: .82rem; }
-  code { font-size: .88rem; }
-
-  .cite { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid #2a3140; }
-  .cite h2 { font-size: 1.05rem; margin: 0 0 .4rem; }
-  .cite p { color: #c5ccd8; font-size: .95rem; }
-  .cite a { color: #c9d4ff; }
-  #meshStrip { border: 1px solid #c9a227; border-radius: 12px; padding: .85rem 1rem; background: #151922; margin: 0 0 1.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; font-size: .88rem; color: #9aa3b2; }
-  #meshStrip .live { color: #e8eaef; }
-  #meshStrip .live b { color: #c9a227; font-size: 1.35rem; margin-right: .35rem; }
-  #meshStrip .rollup b { color: #c9a227; }
-  #meshStrip button { font: 700 .78rem/1 ui-monospace, Menlo, Consolas, monospace; height: 2rem; padding: 0 .75rem; border-radius: 8px; background: #101010; color: #e8eaef; border: 1px solid #c9a227; cursor: pointer; }
-  #meshStrip button:hover { background: #241c0d; color: #c9a227; }
-  #meshStrip input { width: 10rem; padding: .4rem .55rem; border: 1px solid #c9a227; border-radius: 8px; background: #0e0e0e; color: #e8eaef; font: inherit; }
+  h1 { font-size: 2rem; letter-spacing: .02em; margin: 0 0 .2rem; line-height: 1.15; }
+  h2 { font-size: 1.05rem; margin: 1.15rem 0 .4rem; letter-spacing: .02em; }
+  .motto { color: var(--gold); font-style: italic; margin: 0 0 .7rem; font-size: 1.08rem; }
+  .lede { color: var(--muted); margin: 0 0 1rem; max-width: 40rem; }
+  a { color: var(--link); }
+  a.btn.block.primary {
+    display: block;
+    width: 100%;
+    margin: 0 0 .7rem;
+    padding: 1.05rem 1.2rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--btn-bg);
+    color: var(--btn-ink);
+    text-align: center;
+    text-decoration: none;
+    font: 700 1.25rem/1.1 ui-monospace, Menlo, Consolas, monospace;
+    letter-spacing: .03em;
+    cursor: pointer;
+  }
+  a.btn.block.primary:hover { filter: brightness(1.08); }
+  .asset-note { color: var(--muted); font-size: .95rem; margin: 0 0 1rem; }
+  .features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .65rem 1.1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .features li { margin: 0; }
+  .card, .cite {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.05rem 1.1rem 1.15rem;
+    background: var(--panel);
+    margin: 1.15rem 0 0;
+  }
+  .nums { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 1.15rem 0 0; }
+  .hero .count { font-size: 1.85rem; }
+  #meshStrip > div { min-width: 0; max-width: 100%; }
+  .count { font-size: 2.1rem; font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
+  .count span { display: block; font-size: .92rem; font-weight: 500; color: var(--muted); }
+  .kid, .install-label { font-size: 1.02rem; margin: 0 0 .85rem; }
+  button.btn.install {
+    display: inline-block;
+    font: 700 .92rem/1.1 ui-monospace, Menlo, Consolas, monospace;
+    letter-spacing: .03em;
+    padding: .72rem .95rem;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button.btn.install.copied { background: var(--pass); color: #0b0b0b; border-color: transparent; }
+  .meta, .iso { margin: .85rem 0 0; color: var(--muted); font-size: .92rem; }
+  pre {
+    background: var(--field);
+    color: var(--ink);
+    padding: .75rem .9rem;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    font-size: .82rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+  code { font-size: .92em; overflow-wrap: anywhere; }
+  .cite h2 { margin-top: 0; }
+  .cite p { margin: .35rem 0; }
+  footer.quiet { margin-top: 1.4rem; color: var(--muted); font-size: .9rem; }
+  footer.quiet p { margin: .35rem 0; }
+  footer.quiet a { color: var(--ink); }
+  #meshStrip {
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    padding: .85rem 1rem;
+    background: var(--panel);
+    margin: 1.15rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .7rem 1rem;
+    font-size: .88rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  #meshStrip .live { color: var(--ink); }
+  #meshStrip .live b { color: var(--gold); font-size: 1.35rem; margin-right: .35rem; }
+  #meshStrip .rollup b { color: var(--gold); }
+  #meshStrip button {
+    font: 700 .78rem/1 ui-monospace, Menlo, Consolas, monospace;
+    min-height: 2.25rem;
+    padding: 0 .75rem;
+    border-radius: 8px;
+    background: var(--control);
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    cursor: pointer;
+  }
+  #meshStrip button:hover { filter: brightness(1.08); }
+  #meshStrip input {
+    width: min(16rem, 100%);
+    max-width: 100%;
+    padding: .45rem .55rem;
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    background: var(--field);
+    color: var(--ink);
+    font: inherit;
+  }
+  #meshStrip input::placeholder { color: var(--muted); opacity: 1; }
   #meshProducts { flex-basis: 100%; margin: 0; }
+  @media (min-width: 720px) {
+    .wrap { padding-top: 1.6rem; }
+    .features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
 </style>
 <body>
+<a class="skip" href="#downloadBtn">Skip to download</a>
+<div class="wrap">
+<header class="hero">
   <div class="brandrow"><img class="brandmark" src="/sigil.png" width="40" height="40" alt="" decoding="async"></div>
   <h1>EmployeeLock</h1>
   <p class="motto">Hash-chained accountability workbook. Local CLI + sheet. Author Aziel Eliab.</p>
-  <p class="banner">${LIMITATION}</p>
+  <p class="lede">Name the event, name who owns the record, and chain the row. The sheet and the checker stay on this computer.</p>
+  <a class="btn block primary" id="downloadBtn" href="/download?asset=${DEFAULT_ASSET}" aria-describedby="downloadNote">Download</a>
+  <p class="asset-note" id="downloadNote">${n} downloads · ${DEFAULT_ASSET} · one click saves the gzip from this Worker, counted for every branch and fork</p>
+  <ul class="features">
+    <li>Sheets for cover, log, evidence, chain, owners, dash, and lists</li>
+    <li>Each row is hash-chained. A blank owner shows UNOWNED. A moved name shows RENAMED.</li>
+    <li>Local commands: init, append, import, verify, and the loopback sheet</li>
+  </ul>
+  <div class="nums" aria-label="Page views and downloads">
+    <p class="count">${v}<span>Views</span></p>
+    <p class="count">${n}<span>Downloads</span></p>
+  </div>
+</header>
   <div id="meshStrip" aria-label="Suite Live Nodes">
     <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
     <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
@@ -454,23 +610,14 @@ async function indexHtml(env) {
     </div>
     <p id="meshProducts">Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · not Softwares-tab · not AnonBroadcast · not AZMail ring · not a Node Gate · no qnsd proxy</p>
   </div>
-  <div class="card">
-    <div class="nums">
-      <p class="count">${v}<span>Views</span></p>
-      <p class="count">${n}<span>Downloads</span></p>
-    </div>
-    <p class="kid"><strong>Two big buttons.</strong> Download saves the gzip (the Downloads number goes up). One-click install copies a Terminal command. After it finishes, type <code>employeelock ui</code>.</p>
-    <div class="btns">
-      <a class="btn primary dl" href="/download?asset=${DEFAULT_ASSET}">Download</a>
-      <button type="button" class="btn install" id="install-btn">One-click install</button>
-    </div>
+  <section class="card" id="counts">
+    <h2>On this computer</h2>
+    <p class="kid">Download sends the gzip from this Worker (HTTP 200). The count goes up on that click. A fork or another branch is stored on its own key, and the total includes it.</p>
+    <p class="install-label">On this computer, copy the install command. When it finishes, run <code>employeelock ui</code> and open http://127.0.0.1:8871.</p>
+    <button type="button" class="btn install" id="install-btn">Copy install command</button>
     <pre id="install-cmd">curl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash</pre>
-    <p class="kid">Then run: <code>employeelock ui</code> and open http://127.0.0.1:8871 (this computer only).</p>
-    <p class="meta">The download count ticks on the Download click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
-    <p class="iso">Isolated counter: Worker <code>employeelock-download-tracker</code>, project <code>employeelock</code>, KV <code>EMPLOYEELOCK_DOWNLOADS</code>. Not mixed with any other product. /v1 does not increment downloads. Hosted never stores xlsx.</p>
+    <p class="iso">Isolated counter: Worker <code>employeelock-download-tracker</code>, project <code>employeelock</code>, KV <code>EMPLOYEELOCK_DOWNLOADS</code>. /v1 does not increment downloads. The workbook stays on the computer that runs the sheet.</p>
     <p class="meta">GitHub: stars ${gh.stars || 0} · forks ${gh.forks || 0} · watchers ${gh.watchers || 0} · release assets ${gh.release_download_count || 0}</p>
-    <p class="meta">Paper: <a href="https://doi.org/10.5281/zenodo.22257493">doi:10.5281/zenodo.22257493</a> · <a href="https://zenodo.org/records/22257493">Zenodo</a> · EmployeeLock_EL-WP-0.1.pdf · Apache-2.0 · Eliab, Aziel</p>
-    <p class="meta"><a href="/stats">JSON stats</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/v1/skill">Skill</a> · <a href="/ai">AI runtime</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${GITHUB_LATEST}">releases</a></p>
     <script>
       (function () {
         var cmd = "curl -fsSL https://employeelock-download-tracker.vibelock.workers.dev/install.sh | bash";
@@ -599,13 +746,18 @@ async function indexHtml(env) {
     </script>
     <h2>Per repo / branch / fork</h2>
     <ul>${breakdown}</ul>
-  </div>
+  </section>
 
 <section class="cite" id="cite">
   <h2>How to cite</h2>
   <p>Aziel Eliab. EmployeeLock. https://github.com/AzielEliab/employeelock. https://employeelock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22257493.</p>
-  <p><a href="https://aziel-runtime.vibelock.workers.dev/">Catalog</a> · <a href="https://github.com/AzielEliab/employeelock">GitHub</a> · <a href="https://employeelock-download-tracker.vibelock.workers.dev/download">Download</a> · <a href="https://employeelock-download-tracker.vibelock.workers.dev/cite.json">cite.json</a></p>
 </section>
+<footer class="quiet">
+  <p>Apache-2.0 · Aziel Eliab · EmployeeLock 0.1.0</p>
+  <p>Forks are welcome and always allowed.</p>
+  <p><a href="${GITHUB_REPO}">GitHub</a> · <a href="${GITHUB_LATEST}">Releases</a> · <a href="/stats">Stats</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/v1/skill">Skill</a> · <a href="/ai">AI runtime</a> · <a href="/v1/mesh">Mesh</a> · <a href="/cite.json">Cite</a> · <a href="https://doi.org/10.5281/zenodo.22257493">Paper</a></p>
+</footer>
+</div>
 <!-- /gitbaby-seo -->
 </body>
 </html>`;
