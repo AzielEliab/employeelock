@@ -1,26 +1,14 @@
-/* EmployeeLock UI. No CDN. No telemetry. Not a court. Not a truth score. */
+/* EmployeeLock UI. No CDN. No telemetry. */
 (function () {
   const kid = document.getElementById("kid-plain");
+  const statusLine = document.getElementById("status-line");
   const verifyLine = document.getElementById("verify-line");
   const rowsPre = document.getElementById("rows-pre");
-  const advancedPanel = document.getElementById("advanced-panel");
-  const viewSimple = document.getElementById("view-simple");
-  const viewAdvanced = document.getElementById("view-advanced");
   const importFile = document.getElementById("import-file");
   const openXlsx = document.getElementById("open-xlsx");
 
-  let advanced = false;
-  document.body.classList.add("simple");
-
-  function setView(next) {
-    advanced = next;
-    document.body.classList.toggle("simple", !advanced);
-    viewSimple.classList.toggle("on", !advanced);
-    viewAdvanced.classList.toggle("on", advanced);
-    viewSimple.setAttribute("aria-pressed", String(!advanced));
-    viewAdvanced.setAttribute("aria-pressed", String(advanced));
-    advancedPanel.hidden = !advanced;
-  }
+  const DEMO_A = "process outcome recorded with no named owner";
+  const DEMO_B = "records desk took the ticket from the prior queue name";
 
   function fields() {
     return {
@@ -38,6 +26,11 @@
     };
   }
 
+  function isShippedDemo(state) {
+    const rows = (state && state.rows) || [];
+    return rows.length === 2 && rows[0].event === DEMO_A && rows[1].event === DEMO_B;
+  }
+
   function paint(state) {
     const c = (state && state.counts) || {};
     document.getElementById("c-events").textContent = c.events || 0;
@@ -47,14 +40,33 @@
     document.getElementById("c-owned").textContent = c.owned || 0;
     document.getElementById("c-files").textContent = c.evidence_files || 0;
     const v = (state && state.verify) || {};
-    const ok = v.ok === true;
-    kid.textContent = ok
-      ? ("Chain hashes. " + (v.unowned || 0) + " unowned row(s). Missing files are a location problem, not a chain break.")
-      : ("Chain did not hash. " + ((v.errors && v.errors[0]) || "Verify failed.") + " Editing a hashed cell on purpose is how you see a break.");
+    const missing = (v.missing_files || []).length;
+    let status = "Add a row when you are ready.";
+    let next = "A blank owner is stored as UNOWNED.";
+    if (v.ok === true) {
+      status = "Chain matches. " + (v.rows || 0) + " rows.";
+      if (v.unowned) status += " " + v.unowned + " with no owner.";
+      if (missing) status += " " + missing + " file(s) not found on disk.";
+      next = isShippedDemo(state)
+        ? "These two rows are the shipped demo. Add your own row when you are ready."
+        : "Add another row, or open Advanced for files and export.";
+    } else if (v.ok === false) {
+      status = "Chain does not match.";
+      next = (v.errors && v.errors[0]) || "Verify failed.";
+    }
+    if (statusLine) statusLine.textContent = status;
+    kid.textContent = next;
     verifyLine.textContent = v.ok === undefined
       ? ""
-      : ("ok=" + v.ok + " rows=" + v.rows + " unowned=" + v.unowned + " missing=" + ((v.missing_files || []).length));
+      : ("ok=" + v.ok + " rows=" + v.rows + " unowned=" + v.unowned + " missing=" + missing);
     rowsPre.textContent = JSON.stringify(state && state.rows ? state.rows : [], null, 2);
+  }
+
+  function showError(e) {
+    const msg = (e && e.message) ? e.message : String(e);
+    const text = msg + " Next: check the fields, then try Add row again.";
+    kid.textContent = text;
+    if (statusLine) statusLine.textContent = msg;
   }
 
   function post(url, body, headers) {
@@ -74,23 +86,25 @@
     return fetch("/api/state").then(function (r) { return r.json(); }).then(paint);
   }
 
-  viewSimple.addEventListener("click", function () { setView(false); });
-  viewAdvanced.addEventListener("click", function () { setView(true); });
-
   document.getElementById("btn-new").addEventListener("click", function () {
-    post("/api/new", "{}").then(paint).catch(function (e) { kid.textContent = String(e); });
+    post("/api/new", "{}").then(paint).catch(showError);
   });
   document.getElementById("btn-sample").addEventListener("click", function () {
-    post("/api/sample", "{}").then(paint).catch(function (e) { kid.textContent = String(e); });
+    post("/api/sample", "{}").then(paint).catch(showError);
   });
   document.getElementById("btn-verify").addEventListener("click", function () {
-    post("/api/verify", "{}").then(paint).catch(function (e) { kid.textContent = String(e); });
+    post("/api/verify", "{}").then(paint).catch(showError);
   });
   document.getElementById("btn-doctor").addEventListener("click", function () {
     post("/api/doctor", "{}").then(function (j) {
-      kid.textContent = j.ok ? "Doctor passed. Engine, formulas, tamper check, import hash, loopback." : "Doctor failed.";
+      const text = j.ok
+        ? "Doctor passed."
+        : "Doctor found a problem. Open Advanced to read the checks.";
+      kid.textContent = text;
+      if (statusLine) statusLine.textContent = text;
       rowsPre.textContent = JSON.stringify(j, null, 2);
-    }).catch(function (e) { kid.textContent = String(e); });
+      if (!j.ok) document.getElementById("advanced").open = true;
+    }).catch(showError);
   });
   document.getElementById("btn-export").addEventListener("click", function () {
     post("/api/export", "{}").then(function (j) {
@@ -99,9 +113,11 @@
       a.href = URL.createObjectURL(blob);
       a.download = j.filename || "employeelock-receipt.json";
       a.click();
-      kid.textContent = "Exported a JSON receipt. Not a court filing.";
+      const text = "Saved a JSON receipt on this computer.";
+      kid.textContent = text;
+      if (statusLine) statusLine.textContent = text;
       paint(j.receipt);
-    }).catch(function (e) { kid.textContent = String(e); });
+    }).catch(showError);
   });
   document.getElementById("btn-xlsx").addEventListener("click", function () {
     window.location.href = "/api/download.xlsx";
@@ -112,15 +128,31 @@
     if (!f) return;
     f.arrayBuffer().then(function (buf) {
       return fetch("/api/upload-workbook", { method: "POST", body: buf });
-    }).then(function (r) { return r.json(); }).then(paint);
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.error) throw new Error(j.error);
+      paint(j);
+    }).catch(showError);
   });
 
   document.getElementById("row-form").addEventListener("submit", function (ev) {
     ev.preventDefault();
-    post("/api/append", JSON.stringify(fields())).then(paint).catch(function (e) { kid.textContent = String(e); });
+    post("/api/append", JSON.stringify(fields())).then(function (state) {
+      paint(state);
+      document.getElementById("event").value = "";
+      document.getElementById("result").value = "";
+    }).catch(showError);
   });
 
-  document.getElementById("btn-file").addEventListener("click", function () { importFile.click(); });
+  document.getElementById("btn-file").addEventListener("click", function () {
+    if (!document.getElementById("event").value.trim()) {
+      const text = "Write what happened, then add the file.";
+      kid.textContent = text;
+      if (statusLine) statusLine.textContent = text;
+      document.getElementById("event").focus();
+      return;
+    }
+    importFile.click();
+  });
   importFile.addEventListener("change", function () {
     const list = Array.prototype.slice.call(importFile.files || []);
     if (!list.length) return;
@@ -135,8 +167,72 @@
       const body = fields();
       body.files = files;
       return post("/api/import", JSON.stringify(body));
-    }).then(paint).catch(function (e) { kid.textContent = String(e); });
+    }).then(paint).catch(showError);
   });
 
-  refresh().catch(function (e) { kid.textContent = String(e); });
+  const jsonFile = document.getElementById("aziel-import-json");
+  const jsonImport = document.getElementById("aziel-import-json-btn");
+  const jsonExport = document.getElementById("aziel-export-json-btn");
+  const jsonStatus = document.getElementById("aziel-json-status");
+
+  function say(message) {
+    if (jsonStatus) jsonStatus.textContent = message;
+  }
+
+  function collect() {
+    const data = { product: document.title || "", exported_at: new Date().toISOString(), author: "Aziel Eliab" };
+    document.querySelectorAll("input, select, textarea").forEach(function (el) {
+      if (!el.id || el.type === "file" || el.type === "password") return;
+      data[el.id] = el.type === "checkbox" ? el.checked : el.value;
+    });
+    if (window.__azielLastJson && typeof window.__azielLastJson === "object") {
+      data.last = window.__azielLastJson;
+    }
+    return data;
+  }
+
+  function apply(obj) {
+    if (!obj || typeof obj !== "object") return;
+    window.__azielLastJson = obj;
+    Object.keys(obj).forEach(function (k) {
+      if (k === "last" || k === "product" || k === "exported_at" || k === "author") return;
+      const el = document.getElementById(k);
+      if (!el || el.type === "file" || el.type === "password") return;
+      if (el.type === "checkbox") el.checked = !!obj[k];
+      else if ("value" in el) el.value = obj[k];
+    });
+  }
+
+  if (jsonFile && jsonImport && jsonExport) {
+    jsonImport.addEventListener("click", function () { jsonFile.click(); });
+    jsonFile.addEventListener("change", function () {
+      const f = jsonFile.files && jsonFile.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = function () {
+        try {
+          apply(JSON.parse(String(reader.result || "{}")));
+          say("Imported " + f.name);
+        } catch (e) {
+          say("That file is not JSON. Next: choose a .json file.");
+        }
+      };
+      reader.readAsText(f);
+    });
+    jsonExport.addEventListener("click", function () {
+      const blob = new Blob([JSON.stringify(collect(), null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "session.json";
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 800);
+      say("Exported JSON");
+    });
+  }
+
+  refresh().catch(function (e) {
+    const text = "Could not open the workbook. Next: run employeelock ui and reload this page.";
+    kid.textContent = text;
+    if (statusLine) statusLine.textContent = (e && e.message) ? e.message : text;
+  });
 })();

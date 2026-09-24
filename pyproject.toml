@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "employeelock"
 version = "0.1.0"
-description = "EmployeeLock: hash-chained accountability workbook. Local CLI + sheet. Not a court filing. Author Aziel Eliab."
+description = "EmployeeLock: a local workbook of what happened, what followed, and who owns each row. Author Aziel Eliab."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Aziel Eliab"}]

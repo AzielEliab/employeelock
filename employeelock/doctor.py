@@ -227,7 +227,9 @@ def run_doctor(*, as_json: bool = False) -> int:
     }
     if as_json:
         print(json.dumps(payload, indent=2))
+    elif failed == 0:
+        print("Doctor passed.")
     else:
-        print("limitation:", LIMITATION)
-        print("doctor", "passed" if failed == 0 else "failed")
+        print("Doctor found a problem.")
+        print("Next: read the FAIL lines above, then run employeelock doctor again.")
     return 0 if failed == 0 else 1

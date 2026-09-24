@@ -24,7 +24,9 @@ class EmployeeLockApp extends StatelessWidget {
     return MaterialApp(
       title: 'EmployeeLock',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildLightTheme(),
+      darkTheme: buildDarkTheme(),
+      themeMode: ThemeMode.system,
       home: const LogPage(),
     );
   }
@@ -227,33 +229,54 @@ class _LogPageState extends State<LogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('EmployeeLock')),
+      appBar: AppBar(
+        title: const Text('EmployeeLock'),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Center(child: Text('Aziel Eliab')),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(limitation, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 12),
           Text(_verify, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          const Text('Record what happened, what followed, and who owns the row.'),
           const SizedBox(height: 12),
-          TextField(controller: _event, decoration: const InputDecoration(labelText: 'event')),
-          TextField(controller: _result, decoration: const InputDecoration(labelText: 'result')),
-          TextField(controller: _blame, decoration: const InputDecoration(labelText: 'blame_placed (blank ok)')),
-          TextField(controller: _owner, decoration: const InputDecoration(labelText: 'owner_named (blank → UNOWNED)')),
-          TextField(controller: _renamed, decoration: const InputDecoration(labelText: 'renamed_from')),
-          TextField(controller: _short, decoration: const InputDecoration(labelText: 'outcome_short')),
-          TextField(controller: _long, decoration: const InputDecoration(labelText: 'outcome_long')),
+          TextField(controller: _event, decoration: const InputDecoration(labelText: 'What happened')),
+          TextField(controller: _result, decoration: const InputDecoration(labelText: 'What followed')),
+          TextField(
+            controller: _owner,
+            decoration: const InputDecoration(labelText: 'Who owns this record (blank → UNOWNED)'),
+          ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          FilledButton(onPressed: _append, child: const Text('Add row')),
+          const SizedBox(height: 8),
+          ExpansionTile(
+            title: const Text('Advanced'),
             children: [
-              FilledButton(onPressed: _append, child: const Text('Add row')),
-              OutlinedButton(onPressed: _sample, child: const Text('Sample')),
+              TextField(controller: _blame, decoration: const InputDecoration(labelText: 'Who was named')),
+              TextField(controller: _short, decoration: const InputDecoration(labelText: 'What happened soon')),
+              TextField(controller: _long, decoration: const InputDecoration(labelText: 'What lasted')),
+              TextField(controller: _renamed, decoration: const InputDecoration(labelText: 'Renamed from')),
+              const SizedBox(height: 8),
+              OutlinedButton(onPressed: _sample, child: const Text('Load sample rows')),
               OutlinedButton(onPressed: () => setState(_verifyChain), child: const Text('Verify')),
-              OutlinedButton(onPressed: _new, child: const Text('New')),
+              OutlinedButton(onPressed: _new, child: const Text('New workbook')),
             ],
           ),
-          const SizedBox(height: 16),
+          ExpansionTile(
+            title: const Text('About'),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: Text(limitation),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           for (final rec in _chain)
             Card(
               child: ListTile(
@@ -263,7 +286,7 @@ class _LogPageState extends State<LogPage> {
               ),
             ),
           const SizedBox(height: 24),
-          const Text('Apache-2.0 · Aziel Eliab · not a store listing'),
+          const Text('Apache-2.0 · Aziel Eliab'),
         ],
       ),
     );

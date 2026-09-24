@@ -1,14 +1,19 @@
 # EmployeeLock — iPhone & Android
 
-On-device genesis / append / verify of a hash-chained accountability log.
+On-device log of what happened, what followed, and who owns the row.
 Blank owner → UNOWNED. Filled renamed_from → RENAMED.
 
-Offline. No analytics. Dark matte / gold.
+**Author:** Aziel Eliab
 
-Application id: `com.azieeliab.employeelock`
+## Start
 
-This phone app does not replace the desktop package (xlsx + CLI).
-Not a store listing. Not a separate repo.
+1. `cd mobile && flutter create --org com.azieeliab --project-name employeelock .`
+2. `flutter pub get`
+3. `flutter run`
+
+Application id: `com.azieeliab.employeelock`. Offline. No analytics. Light and dark follow the system.
+
+The desktop workbook and CLI remain the full package. These sources live in this repo.
 
 ## Open in Android Studio / Xcode
 
