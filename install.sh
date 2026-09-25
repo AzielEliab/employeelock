@@ -27,6 +27,6 @@ python -m pip install -e .
 
 echo
 echo "Installed EmployeeLock."
-echo "Run:  employeelock ui"
-echo "Then open http://127.0.0.1:8871  (loopback only)"
-echo "Not a court. Not UL. Not a truth score. Author: Aziel Eliab."
+echo "1. employeelock ui"
+echo "2. Open http://127.0.0.1:8871/"
+echo "Author: Aziel Eliab."

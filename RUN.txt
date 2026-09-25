@@ -1,0 +1,6 @@
+EmployeeLock
+Author: Aziel Eliab
+
+1. pip install -e .
+2. employeelock ui
+3. Open http://127.0.0.1:8871/

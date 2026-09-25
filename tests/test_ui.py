@@ -44,6 +44,8 @@ def test_ui_get_root_honest_scope() -> None:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/style.css", timeout=3) as resp:
             css = resp.read().decode("utf-8")
         assert "--gold" in css or "c9a227" in css
+        assert "prefers-color-scheme" in css
+        assert "focus-visible" in css
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=3) as resp:
             health = json.loads(resp.read().decode("utf-8"))
         assert health["ok"] is True

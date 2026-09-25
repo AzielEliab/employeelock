@@ -338,10 +338,10 @@ def make_server(host: str = "127.0.0.1", port: int = 8871) -> ThreadingHTTPServe
 def serve(host: str = "127.0.0.1", port: int = 8871) -> None:
     httpd = make_server(host, port)
     bound_host, bound_port = httpd.server_address[:2]
-    print(
-        f"EmployeeLock UI http://{bound_host}:{bound_port} "
-        "(loopback only; not a court; not UL; not a truth score)"
-    )
+    shown = bound_host
+    if isinstance(shown, str) and ":" in shown and not shown.startswith("["):
+        shown = f"[{shown}]"
+    print(f"Open http://{shown}:{bound_port}/")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

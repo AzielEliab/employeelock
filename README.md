@@ -1,19 +1,26 @@
 # EmployeeLock
 
-Hash-chained accountability workbook. Local CLI + sheet. Not a court filing.
+A local workbook of what happened, what followed, and who owns each row.
 
 **Author:** Aziel Eliab
-**Date:** 2 September 2026
-**License:** [Apache-2.0](LICENSE)
-**Version:** 0.1.0
+
+## Start
+
+1. `python -m venv .venv && source .venv/bin/activate && pip install -e .`
+2. `employeelock ui`
+3. Open http://127.0.0.1:8871/ and add a row.
+
+Check the install with `employeelock doctor`. Add `--json` when a program should read the result.
+
+## Notes
+
+**Version:** 0.1.0 · **License:** [Apache-2.0](LICENSE) · **Date:** 2 September 2026
 **Spec:** `employeelock-v0`
 **Paper:** EL-WP-0.1 — [docs/whitepaper.md](docs/whitepaper.md) · DOI [10.5281/zenodo.22257493](https://doi.org/10.5281/zenodo.22257493)
 
-> Name the event. Name who owns the record. Keep leftover blame blank if it is blank. Chain the row.
+Name the event. Name who owns the record. Keep leftover blame blank if it is blank. Chain the row.
 
 **Forks are welcome and always allowed.**
-
-## Honest scope
 
 **THIS IS:** workbook (COVER, LOG, EVIDENCE, CHAIN, OWNERS, DASH, LISTS) + CLI (init/append/import/verify) + linear hash chain + countermeasure against unowned/renamed rows.
 
@@ -33,15 +40,9 @@ The script curls the **counted** tarball from this project's Worker
 
 ## Quick start
 
-```bash
-python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
-python3 employeelock.py init WORKBOOK.xlsx
-employeelock ui
-```
+Same three steps as [Start](#start). For tests, install the dev extra: `pip install -e ".[dev]"`.
 
-Open http://127.0.0.1:8871 (loopback only). No CDN, no telemetry.
-
-Self-check: `employeelock doctor`.
+The page at http://127.0.0.1:8871/ stays on this computer. No CDN, no telemetry.
 
 ## Counted download (Cloudflare Worker)
 
@@ -76,7 +77,9 @@ employeelock ui
 employeelock doctor
 ```
 
-`verify` prints `{ok, rows, errors, missing_files, unowned}`. Exit 0 if
+People get short sentences. Programs pass `--json`.
+
+`verify --json` prints `{ok, rows, errors, missing_files, unowned}`. Exit 0 if
 the chain hashes. Missing files are reported and do not by themselves
 fail `ok`.
 
@@ -102,17 +105,14 @@ BAL papers.
 
 ## Local UI
 
-`employeelock ui` serves a loopback dashboard at http://127.0.0.1:8871
+`employeelock ui` prints `Open http://127.0.0.1:8871/` and serves the page on this computer.
 
-Buttons: New workbook, Add row, Add file (import), Export, Verify,
-Doctor, Sample. Simple / Advanced views. Shows UNOWNED / RENAMED /
-chain OK counts. Import/export JSON receipts. Binds `127.0.0.1` only.
+The first screen asks for the row and offers **Add row**. Verify and Doctor sit beside it. New workbook, sample rows, file import, export, and JSON live under **Advanced**. About holds the longer scope note. Counts show events, UNOWNED, RENAMED, and chain OK. The page follows the system light or dark setting.
 
 ## iPhone & Android
 
 Flutter sources: [`mobile/`](mobile/). Application id
-`com.azieeliab.employeelock`. Offline. No analytics. Dark matte / gold.
-Not a store listing. Not a separate repo.
+`com.azieeliab.employeelock`. Offline. No analytics. Light and dark follow the system, with a gold focus. The phone app lives in this repo.
 
 ```bash
 cd mobile
